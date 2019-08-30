@@ -1,6 +1,7 @@
-package service;
+package service.Impl;
 
 import model.Product;
+import service.ProductService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,5 +41,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void remove(int id) {
         products.remove(id);
+    }
+
+    @Override
+    public Product searchProductByName(String name) {
+        List<Product> productList = findAll();
+        for (Product product:productList) {
+            if (product.getName().equals(name)) return product;
+        }
+        return null;
     }
 }

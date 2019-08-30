@@ -9,6 +9,9 @@
 <p>
     <a href="/products?action=create">Create new product</a>
 </p>
+<p>
+    <a href="/products?action=search">Search product</a>
+</p>
 <table border="1">
     <tr>
         <td>ID</td>
@@ -27,5 +30,8 @@
         </tr>
     </c:forEach>
 </table>
+
+
+</form>
 </body>
 </html>
