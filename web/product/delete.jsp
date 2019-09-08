@@ -26,6 +26,10 @@
                 <td>${requestScope["product"].getDescription()}</td>
             </tr>
             <tr>
+                <td>Image: </td>
+                <td><img src="image/${product.getImage()}" width="100px" height="100px"/></td>
+            </tr>
+            <tr>
                 <td><input type="submit" value="Delete product"></td>
                 <td><a href="/products">Back to product list</a></td>
             </tr>

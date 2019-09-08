@@ -6,16 +6,24 @@ import service.Impl.ProductServiceImpl;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 import java.io.IOException;
 import java.util.List;
+import java.io.File;
 
 @WebServlet(name = "ProductServlet", urlPatterns = "/products")
+@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+        maxFileSize = 1024 * 1024 * 10, // 10MB
+        maxRequestSize = 1024 * 1024 * 50) // 50MB
 public class ProductServlet extends HttpServlet {
     private ProductService productService = new ProductServiceImpl();
+    public static final String SAVE_DIRECTORY = "image";
+
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
@@ -80,6 +88,7 @@ public class ProductServlet extends HttpServlet {
         int id = Integer.parseInt(request.getParameter("id"));
         String name = request.getParameter("name");
         String description = request.getParameter("description");
+        String image = getImageString(request);
         Product product = this.productService.findById(id);
         RequestDispatcher dispatcher;
         if (product == null) {
@@ -88,6 +97,7 @@ public class ProductServlet extends HttpServlet {
             product.setId(id);
             product.setName(name);
             product.setDescription(description);
+            product.setImage(image);
             this.productService.update(id, product);
             request.setAttribute("product", product);
             request.setAttribute("message", "Product information was updated");
@@ -103,11 +113,14 @@ public class ProductServlet extends HttpServlet {
     }
 
     private void createProduct(HttpServletRequest request, HttpServletResponse response) {
+
+        String image = getImageString(request);
+
         String name = request.getParameter("name");
         int id = Integer.parseInt(request.getParameter("id"));
         String description = request.getParameter("description");
 
-        Product product = new Product(id, name, description);
+        Product product = new Product(id, name, description, image);
         this.productService.save(product);
         RequestDispatcher dispatcher = request.getRequestDispatcher("product/create.jsp");
         request.setAttribute("message", "New product was created");
@@ -118,6 +131,70 @@ public class ProductServlet extends HttpServlet {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private String getImageString(HttpServletRequest request) {
+        String image = "";
+
+        // Đường dẫn tuyệt đối tới thư mục gốc của web app.
+        String appPath = request.getServletContext().getRealPath("");
+        appPath = appPath.replace('\\', '/');
+
+
+        // Thư mục để save file tải lên.
+        String fullSavePath = null;
+        if (appPath.endsWith("/")) {
+            fullSavePath = appPath + SAVE_DIRECTORY;
+        } else {
+            fullSavePath = appPath + "/" + SAVE_DIRECTORY;
+        }
+
+
+        // Tạo thư mục nếu nó không tồn tại.
+        File fileSaveDir = new File(fullSavePath);
+        if (!fileSaveDir.exists()) {
+            fileSaveDir.mkdir();
+        }
+
+        // Danh mục các phần đã upload lên (Có thể là nhiều file).
+        try {
+            for (Part part : request.getParts()) {
+                String fileName = extractFileName(part);
+                if (fileName != null && fileName.length() > 0) {
+                    String filePath = fullSavePath + File.separator + fileName;
+                    System.out.println("Write attachment to file: " + filePath);
+
+                    // Ghi vào file.
+                    part.write(filePath);
+                    image = fileName;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ServletException e) {
+            e.printStackTrace();
+        }
+        return image;
+    }
+
+    private String extractFileName(Part part) {
+        // form-data; name="file"; filename="C:\file1.zip"
+        // form-data; name="file"; filename="C:\Note\file2.zip"
+        String contentDisp = part.getHeader("content-disposition");
+        String[] items = contentDisp.split(";");
+        for (String s : items) {
+            if (s.trim().startsWith("filename")) {
+                // C:\file1.zip
+                // C:\Note\file2.zip
+                String clientFileName = s.substring(s.indexOf("=") + 2, s.length() - 1);
+                clientFileName = clientFileName.replace("\\", "/");
+                int i = clientFileName.lastIndexOf('/');
+                // file1.zip
+                // file2.zip
+                return clientFileName.substring(i + 1);
+            }
+        }
+        return null;
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

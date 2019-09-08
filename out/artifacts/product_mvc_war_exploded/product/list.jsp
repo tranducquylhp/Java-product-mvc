@@ -17,6 +17,7 @@
         <td>ID</td>
         <td>Name</td>
         <td>Description</td>
+        <td>Image</td>
         <td>Edit</td>
         <td>Delete</td>
     </tr>
@@ -25,12 +26,13 @@
             <td><a href="/products?action=view&id=${product.getId()}">${product.getId()}</a></td>
             <td>${product.getName()}</td>
             <td>${product.getDescription()}</td>
+            <td><img src="image/${product.getImage()}" width="100px" height="100px"/></td>
             <td><a href="/products?action=edit&id=${product.getId()}">edit</a></td>
             <td><a href="/products?action=delete&id=${product.getId()}">delete</a></td>
         </tr>
     </c:forEach>
 </table>
-<img src="image\pen.png"/>
+
 
 </form>
 </body>

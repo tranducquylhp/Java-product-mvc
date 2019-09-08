@@ -2,16 +2,25 @@ package model;
 
 public class Product{
     private int id;
-    private String name, description;
+    private String name, description, image;
 
     public Product() {
     }
 
 
-    public Product(int id, String name, String description) {
+    public Product(int id, String name, String description, String image) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.image = image;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public int getId() {

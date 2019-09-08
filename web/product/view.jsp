@@ -21,6 +21,10 @@
         <td>Description: </td>
         <td>${requestScope["product"].getDescription()}</td>
     </tr>
+    <tr>
+        <td>Image: </td>
+        <td><img src="image/${product.getImage()}" width="100px" height="100px"/></td>
+    </tr>
 </table>
 </body>
 </html>

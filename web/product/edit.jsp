@@ -14,13 +14,13 @@
 <p>
     <a href="/products">Back to product list</a>
 </p>
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     <fieldset>
         <legend>Product information</legend>
         <table>
             <tr>
                 <td>ID: </td>
-                <td><input type="text" name="id" id="id" value="${requestScope["product"].getId()}"></td>
+                <td><p id = "id" name = "id"> ${requestScope["product"].getId()} </p></td>
             </tr>
             <tr>
                 <td>Name: </td>
@@ -29,6 +29,10 @@
             <tr>
                 <td>Description: </td>
                 <td><input type="text" name="description" id="description" value="${requestScope["product"].getDescription()}"></td>
+            </tr>
+            <tr>
+                <td>Image: </td>
+                <td><img src="image/${product.getImage()}" width="100px" height="100px"/> <input type="file" name="image" id="image"></td>
             </tr>
             <tr>
                 <td></td>

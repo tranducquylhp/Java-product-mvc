@@ -19,7 +19,7 @@
 <p>
     <a href="/products">Back to product list</a>
 </p>
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     <fieldset>
         <legend>Product information</legend>
         <table>
@@ -36,10 +36,12 @@
                 <td><input type="text" name="description" id="description"></td>
             </tr>
             <tr>
-                <td></td>
-                <td><input type="submit" value="Create product"></td>
+                <td> Select file upload: </td>
+                <td><input type="file" name="image" id="image"></td>
             </tr>
         </table>
+        <br/>
+        <input type="submit" value="Create product">
     </fieldset>
 </form>
 </body>
