@@ -33,7 +33,9 @@
     </c:forEach>
 </table>
 
-
+<form method="post" >
+    <input type="text" name="name" id="name">
+    <button type="submit"> Search </button>
 </form>
 </body>
 </html>
